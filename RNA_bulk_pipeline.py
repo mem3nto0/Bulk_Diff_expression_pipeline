@@ -23,13 +23,18 @@ the datasets with 3 control and 4 condition.
 # the meta data are dataframe indicating what samples are condition or control
 # Ctrl = control , Con = condition
 
-# change the number of "Ctrl" and "Con" depending on your sample
-meta_data = pd.DataFrame(zip(counts.index, ["Ctrl","Ctrl","Ctrl","Con","Con","Con","Con"]), columns=["Sample", "Condition"])
+# change the number of "Ctrl" and "Con_n" depending on your sample.
+
+meta_data = pd.DataFrame(zip(counts.index, ["Ctrl","Ctrl","Con1","Con2","Con3","Con4","Con5"]), columns=["Sample", "Condition"])
 meta_data = meta_data.set_index(list(meta_data)[0])
 
 # ==== extract pydeseq2 results===
-# dds is the annData dataframe. used later for PCA
-results, dds = Deseq2_results(counts, meta_data)
+# the function below can rerturn two different outputs depending on the variable Return_results
+#  - return_results = True (default). the function return the normalized AnnDataset and the stastistical inference
+#    done  by pydseq2 and the
+#  - return_results = False. the function return the normalized AnnDataset
+
+dds, results = Deseq2_results(counts, meta_data)
 
 #%%
 

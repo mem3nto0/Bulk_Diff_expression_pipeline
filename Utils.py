@@ -17,7 +17,7 @@ def Load_and_filter_dataset(path):
     return counts.T # pydseq needs the data [sample,genes]
 
 
-def Deseq2_results(counts, meta_data):
+def Deseq2_results(counts, meta_data, Return_results = True):
 
     dds = DeseqDataSet(counts=counts,
                        metadata= meta_data,
@@ -25,18 +25,29 @@ def Deseq2_results(counts, meta_data):
 
     dds.deseq2() # start the pre-procesing of the data
 
-    heads = list(meta_data)
-    variables = meta_data[heads[0]].unique()
+    if Return_results == True:
 
-    stat_res = DeseqStats(dds, 
-                          n_cpus = 8, 
-                          contrast= ("Condition", variables[0], variables[1]))
-    
-    stat_res.summary()
+        results = {}
+        heads = list(meta_data)
+        variables = meta_data[heads[0]].unique()
 
-    results = stat_res.results_df
+        Ctrl_str = variables[0]
 
-    return results, dds
+        for Cond_str in variables[1:]:
+
+            stat_res = DeseqStats(dds, 
+                                n_cpus = 8, 
+                                contrast= ("Condition", Ctrl_str, Cond_str))
+            
+            stat_res.summary()
+
+            results[Cond_str] = stat_res.results_df
+
+        return results, dds
+
+    else:
+
+        return dds
 
 
 # =======================================
